@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Progresso di apprendimento",
+  "gui.projecte_research.search": "Cerca",
+  "gui.projecte_research.search_hint": "Cerca... (@mod $tag #testo)",
+  "gui.projecte_research.nothing_found": "Nessun risultato",
+  "gui.projecte_research.nothing_yet": "Ancora niente",
+  "commands.projecte_research.error.no_item": "Specifica un oggetto o tienine uno nella mano principale",
+  "commands.projecte_research.error.no_emc": "Questo oggetto non ha EMC e non può essere appreso",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - appreso (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "Tutto l'apprendimento di %s è stato cancellato",
+  "commands.projecte_research.clear.item": "Apprendimento di %2$s cancellato per %1$s",
+  "commands.projecte_research.reload": "Configurazione projecte_research.json ricaricata"
+}

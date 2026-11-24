@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Прогрес вивчення",
+  "gui.projecte_research.search": "Пошук",
+  "gui.projecte_research.search_hint": "Пошук... (@мод $тег #текст)",
+  "gui.projecte_research.nothing_found": "Нічого не знайдено",
+  "gui.projecte_research.nothing_yet": "Поки що нічого немає",
+  "commands.projecte_research.error.no_item": "Вкажіть предмет або візьміть його в основну руку",
+  "commands.projecte_research.error.no_emc": "Цей предмет не має EMC, його не можна вивчити",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - вивчено (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "Усе вивчення очищено для гравця %s",
+  "commands.projecte_research.clear.item": "Очищено вивчення «%2$s» для гравця %1$s",
+  "commands.projecte_research.reload": "Конфіг projecte_research.json перезавантажено"
+}

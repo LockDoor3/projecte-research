@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "학습 진행도",
+  "gui.projecte_research.search": "검색",
+  "gui.projecte_research.search_hint": "검색... (@mod $tag #텍스트)",
+  "gui.projecte_research.nothing_found": "결과 없음",
+  "gui.projecte_research.nothing_yet": "아직 아무것도 없습니다",
+  "commands.projecte_research.error.no_item": "아이템을 지정하거나 주로 쓰는 손에 들어 주세요",
+  "commands.projecte_research.error.no_emc": "이 아이템은 EMC가 없어 학습할 수 없습니다",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - 학습 완료 (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "%s의 모든 학습을 초기화했습니다",
+  "commands.projecte_research.clear.item": "%1$s의 %2$s 학습을 초기화했습니다",
+  "commands.projecte_research.reload": "설정 projecte_research.json을(를) 다시 불러왔습니다"
+}

@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Leervoortgang",
+  "gui.projecte_research.search": "Zoeken",
+  "gui.projecte_research.search_hint": "Zoeken... (@mod $tag #tekst)",
+  "gui.projecte_research.nothing_found": "Niets gevonden",
+  "gui.projecte_research.nothing_yet": "Nog niets aanwezig",
+  "commands.projecte_research.error.no_item": "Geef een voorwerp op of houd er een vast in je hoofdhand",
+  "commands.projecte_research.error.no_emc": "Dit voorwerp heeft geen EMC en kan niet worden geleerd",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - geleerd (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "Alle leervoortgang van %s is gewist",
+  "commands.projecte_research.clear.item": "Leren van %2$s gewist voor %1$s",
+  "commands.projecte_research.reload": "Configuratie projecte_research.json opnieuw geladen"
+}

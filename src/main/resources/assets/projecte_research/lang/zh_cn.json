@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "学习进度",
+  "gui.projecte_research.search": "搜索",
+  "gui.projecte_research.search_hint": "搜索... (@模组 $标签 #文本)",
+  "gui.projecte_research.nothing_found": "未找到结果",
+  "gui.projecte_research.nothing_yet": "暂无内容",
+  "commands.projecte_research.error.no_item": "请指定物品或将其拿在主手",
+  "commands.projecte_research.error.no_emc": "该物品没有 EMC，无法学习",
+  "commands.projecte_research.set.learned": "%1$s：%2$s - 已学习 (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s：%2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "已清除 %s 的所有学习进度",
+  "commands.projecte_research.clear.item": "已清除 %1$s 的 %2$s 学习进度",
+  "commands.projecte_research.reload": "已重新加载配置 projecte_research.json"
+}

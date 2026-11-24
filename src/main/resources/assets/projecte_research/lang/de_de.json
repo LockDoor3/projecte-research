@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Lernfortschritt",
+  "gui.projecte_research.search": "Suche",
+  "gui.projecte_research.search_hint": "Suche... (@Mod $Tag #Text)",
+  "gui.projecte_research.nothing_found": "Nichts gefunden",
+  "gui.projecte_research.nothing_yet": "Noch nichts vorhanden",
+  "commands.projecte_research.error.no_item": "Gib einen Gegenstand an oder halte einen in der Haupthand",
+  "commands.projecte_research.error.no_emc": "Dieser Gegenstand hat kein EMC und kann nicht gelernt werden",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - gelernt (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "Der gesamte Lernfortschritt von %s wurde gelöscht",
+  "commands.projecte_research.clear.item": "Lernfortschritt für %2$s bei %1$s gelöscht",
+  "commands.projecte_research.reload": "Konfiguration projecte_research.json neu geladen"
+}

@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Postęp nauki",
+  "gui.projecte_research.search": "Szukaj",
+  "gui.projecte_research.search_hint": "Szukaj... (@mod $tag #tekst)",
+  "gui.projecte_research.nothing_found": "Nic nie znaleziono",
+  "gui.projecte_research.nothing_yet": "Na razie nic tu nie ma",
+  "commands.projecte_research.error.no_item": "Podaj przedmiot lub trzymaj go w głównej ręce",
+  "commands.projecte_research.error.no_emc": "Ten przedmiot nie ma EMC i nie można go poznać",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - poznano (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "Wyczyszczono cały postęp nauki gracza %s",
+  "commands.projecte_research.clear.item": "Wyczyszczono naukę przedmiotu %2$s dla gracza %1$s",
+  "commands.projecte_research.reload": "Konfiguracja projecte_research.json została przeładowana"
+}

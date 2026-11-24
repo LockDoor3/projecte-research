@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Learning Progress",
+  "gui.projecte_research.search": "Search",
+  "gui.projecte_research.search_hint": "Search... (@mod $tag #text)",
+  "gui.projecte_research.nothing_found": "Nothing found",
+  "gui.projecte_research.nothing_yet": "Nothing here yet",
+  "commands.projecte_research.error.no_item": "Specify an item or hold one in your main hand",
+  "commands.projecte_research.error.no_emc": "This item has no EMC and cannot be learned",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - learned (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "Cleared all learning progress for %s",
+  "commands.projecte_research.clear.item": "Cleared learning of %2$s for %1$s",
+  "commands.projecte_research.reload": "Config projecte_research.json reloaded"
+}

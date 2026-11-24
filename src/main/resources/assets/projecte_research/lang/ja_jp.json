@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "学習の進捗",
+  "gui.projecte_research.search": "検索",
+  "gui.projecte_research.search_hint": "検索... (@mod $tag #テキスト)",
+  "gui.projecte_research.nothing_found": "見つかりませんでした",
+  "gui.projecte_research.nothing_yet": "まだ何もありません",
+  "commands.projecte_research.error.no_item": "アイテムを指定するか、メインハンドに持ってください",
+  "commands.projecte_research.error.no_emc": "このアイテムにはEMCがないため、習得できません",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - 習得済み (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "%s の学習をすべてリセットしました",
+  "commands.projecte_research.clear.item": "%1$s の %2$s の学習をリセットしました",
+  "commands.projecte_research.reload": "設定ファイル projecte_research.json を再読み込みしました"
+}

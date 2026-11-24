@@ -1,0 +1,14 @@
+{
+  "gui.projecte_research.progress_button": "Öğrenme İlerlemesi",
+  "gui.projecte_research.search": "Ara",
+  "gui.projecte_research.search_hint": "Ara... (@mod $etiket #metin)",
+  "gui.projecte_research.nothing_found": "Hiçbir şey bulunamadı",
+  "gui.projecte_research.nothing_yet": "Henüz bir şey yok",
+  "commands.projecte_research.error.no_item": "Bir eşya belirtin veya ana elinizde tutun",
+  "commands.projecte_research.error.no_emc": "Bu eşyanın EMC değeri yok, öğrenilemez",
+  "commands.projecte_research.set.learned": "%1$s: %2$s - öğrenildi (%3$s/%3$s)",
+  "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
+  "commands.projecte_research.clear.all": "%s oyuncusunun tüm öğrenme ilerlemesi temizlendi",
+  "commands.projecte_research.clear.item": "%1$s oyuncusunun %2$s öğrenmesi temizlendi",
+  "commands.projecte_research.reload": "projecte_research.json yapılandırması yeniden yüklendi"
+}

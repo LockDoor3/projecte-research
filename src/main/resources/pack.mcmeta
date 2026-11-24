@@ -1,0 +1,8 @@
+{
+  "pack": {
+    "description": {
+      "text": "${mod_id} resources. A ProjectE addon introducing an item research mechanic for transmutation."
+    },
+    "pack_format": 15
+  }
+}
