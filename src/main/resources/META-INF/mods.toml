@@ -6,7 +6,9 @@ license="MIT"
 modId="projecte_research" #mandatory
 version="1.0.0" #mandatory
 displayName="ProjectE Research" #mandatory
+logoFile="logo.png"
 authors="SSS_Loc" #optional
+displayURL="https://github.com/LockDoor3/projecte-research"
 description='''A ProjectE addon introducing an item research mechanic for transmutation.'''
 
 [[dependencies.projecte_research]] #optional

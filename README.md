@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="src/main/resources/logo.png" alt="ProjectE Research Logo" width="128"/>
+</p>
 # ProjectE Research
 
 An addon for ProjectE (Minecraft 1.20.1) that introduces a research mechanic.
