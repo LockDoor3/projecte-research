@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s : %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Tout l'apprentissage de %s a été réinitialisé",
   "commands.projecte_research.clear.item": "Apprentissage de %2$s réinitialisé pour %1$s",
-  "commands.projecte_research.reload": "Configuration projecte_research.json rechargée"
+  "commands.projecte_research.reload": "Configuration projecte_research.json rechargée",
+  "message.projecte_research.condenser_unlearned": "Apprenez d'abord cet objet"
 }

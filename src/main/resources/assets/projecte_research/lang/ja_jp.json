@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "%s の学習をすべてリセットしました",
   "commands.projecte_research.clear.item": "%1$s の %2$s の学習をリセットしました",
-  "commands.projecte_research.reload": "設定ファイル projecte_research.json を再読み込みしました"
+  "commands.projecte_research.reload": "設定ファイル projecte_research.json を再読み込みしました",
+  "message.projecte_research.condenser_unlearned": "まずこのアイテムを習得してください"
 }

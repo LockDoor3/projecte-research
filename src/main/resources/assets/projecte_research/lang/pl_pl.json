@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Wyczyszczono cały postęp nauki gracza %s",
   "commands.projecte_research.clear.item": "Wyczyszczono naukę przedmiotu %2$s dla gracza %1$s",
-  "commands.projecte_research.reload": "Konfiguracja projecte_research.json została przeładowana"
+  "commands.projecte_research.reload": "Konfiguracja projecte_research.json została przeładowana",
+  "message.projecte_research.condenser_unlearned": "Najpierw poznaj ten przedmiot"
 }

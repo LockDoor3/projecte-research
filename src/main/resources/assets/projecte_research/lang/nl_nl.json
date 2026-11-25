@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Alle leervoortgang van %s is gewist",
   "commands.projecte_research.clear.item": "Leren van %2$s gewist voor %1$s",
-  "commands.projecte_research.reload": "Configuratie projecte_research.json opnieuw geladen"
+  "commands.projecte_research.reload": "Configuratie projecte_research.json opnieuw geladen",
+  "message.projecte_research.condenser_unlearned": "Leer eerst dit voorwerp"
 }

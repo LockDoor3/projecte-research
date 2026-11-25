@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s：%2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "已清除 %s 的所有學習進度",
   "commands.projecte_research.clear.item": "已清除 %1$s 的 %2$s 學習進度",
-  "commands.projecte_research.reload": "已重新載入設定 projecte_research.json"
+  "commands.projecte_research.reload": "已重新載入設定 projecte_research.json",
+  "message.projecte_research.condenser_unlearned": "請先學習此物品"
 }

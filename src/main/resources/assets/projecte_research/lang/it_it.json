@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Tutto l'apprendimento di %s è stato cancellato",
   "commands.projecte_research.clear.item": "Apprendimento di %2$s cancellato per %1$s",
-  "commands.projecte_research.reload": "Configurazione projecte_research.json ricaricata"
+  "commands.projecte_research.reload": "Configurazione projecte_research.json ricaricata",
+  "message.projecte_research.condenser_unlearned": "Prima apprendi questo oggetto"
 }

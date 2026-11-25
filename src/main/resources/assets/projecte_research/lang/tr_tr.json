@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "%s oyuncusunun tüm öğrenme ilerlemesi temizlendi",
   "commands.projecte_research.clear.item": "%1$s oyuncusunun %2$s öğrenmesi temizlendi",
-  "commands.projecte_research.reload": "projecte_research.json yapılandırması yeniden yüklendi"
+  "commands.projecte_research.reload": "projecte_research.json yapılandırması yeniden yüklendi",
+  "message.projecte_research.condenser_unlearned": "Önce bu eşyayı öğrenin"
 }

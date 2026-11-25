@@ -29,8 +29,12 @@ public final class ResearchConfig {
     private static final String DEFAULT_FILE = """
             {
                             "_help": "Rule priority: items > tags > nonStackableRequired > defaultRequired. nonStackableRequired applies to items that do not stack (max stack size 1); set it to -1 to disable. After editing this file run /projecte_research reload or restart the game.",
+              
               "defaultRequired": 64,
               "nonStackableRequired": 1,
+              
+                             "_help": "condenserRequiresLearned: if true, the Energy Condenser (and MK2) lock slot only accepts items the player has learned; set to false to disable.",
+              "condenserRequiresLearned": true,
               "tags": [
                 { "tag": "forge:tools", "required": 1 },
                 { "tag": "forge:armors", "required": 1 },
@@ -50,7 +54,8 @@ public final class ResearchConfig {
     public record TagRule(String tag, int required) {}
 
     public record Data(int defaultRequired, int nonStackableRequired,
-                       Map<String, Integer> items, List<TagRule> tags) {
+                       Map<String, Integer> items, List<TagRule> tags,
+                       boolean condenserRequiresLearned) {
 
         public int requiredFor(Item item) {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
@@ -79,6 +84,7 @@ public final class ResearchConfig {
                 b.writeUtf(t.tag());
                 b.writeVarInt(t.required());
             });
+            buf.writeBoolean(condenserRequiresLearned);   // новая строка
         }
 
         public static Data read(FriendlyByteBuf buf) {
@@ -86,7 +92,8 @@ public final class ResearchConfig {
             int ns = buf.readInt();
             Map<String, Integer> items = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readVarInt);
             List<TagRule> tags = buf.readCollection(ArrayList::new, b -> new TagRule(b.readUtf(), b.readVarInt()));
-            return new Data(def, ns, items, tags);
+            boolean condenser = buf.readBoolean();        // новая строка
+            return new Data(def, ns, items, tags, condenser);
         }
     }
 
@@ -116,6 +123,8 @@ public final class ResearchConfig {
     private static Data parse(JsonObject root) {
         int def = Math.max(1, root.has("defaultRequired") ? root.get("defaultRequired").getAsInt() : 64);
         int nonStackable = root.has("nonStackableRequired") ? root.get("nonStackableRequired").getAsInt() : 1;
+        boolean condenser = !root.has("condenserRequiresLearned")
+                || root.get("condenserRequiresLearned").getAsBoolean();
 
         Map<String, Integer> items = new LinkedHashMap<>();
         if (root.has("items")) {
@@ -141,6 +150,6 @@ public final class ResearchConfig {
                 tags.add(new TagRule(tag, Math.max(1, o.has("required") ? o.get("required").getAsInt() : def)));
             }
         }
-        return new Data(def, nonStackable, items, tags);
+        return new Data(def, nonStackable, items, tags, condenser);
     }
 }

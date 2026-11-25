@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "%s의 모든 학습을 초기화했습니다",
   "commands.projecte_research.clear.item": "%1$s의 %2$s 학습을 초기화했습니다",
-  "commands.projecte_research.reload": "설정 projecte_research.json을(를) 다시 불러왔습니다"
+  "commands.projecte_research.reload": "설정 projecte_research.json을(를) 다시 불러왔습니다",
+  "message.projecte_research.condenser_unlearned": "먼저 이 아이템을 학습하세요"
 }

@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Todo o aprendizado de %s foi apagado",
   "commands.projecte_research.clear.item": "Aprendizado de %2$s apagado para %1$s",
-  "commands.projecte_research.reload": "Configuração projecte_research.json recarregada"
+  "commands.projecte_research.reload": "Configuração projecte_research.json recarregada",
+  "message.projecte_research.condenser_unlearned": "Aprenda este item primeiro"
 }

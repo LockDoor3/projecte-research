@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Der gesamte Lernfortschritt von %s wurde gelöscht",
   "commands.projecte_research.clear.item": "Lernfortschritt für %2$s bei %1$s gelöscht",
-  "commands.projecte_research.reload": "Konfiguration projecte_research.json neu geladen"
+  "commands.projecte_research.reload": "Konfiguration projecte_research.json neu geladen",
+  "message.projecte_research.condenser_unlearned": "Lerne zuerst diesen Gegenstand"
 }

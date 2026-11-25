@@ -10,5 +10,6 @@
   "commands.projecte_research.set.progress": "%1$s: %2$s - %3$s/%4$s",
   "commands.projecte_research.clear.all": "Все изучения очищены у игрока %s",
   "commands.projecte_research.clear.item": "Очищено изучение «%2$s» у игрока %1$s",
-  "commands.projecte_research.reload": "Конфиг projecte_research.json перезагружен"
+  "commands.projecte_research.reload": "Конфиг projecte_research.json перезагружен",
+  "message.projecte_research.condenser_unlearned": "Сначала изучите этот предмет"
 }
