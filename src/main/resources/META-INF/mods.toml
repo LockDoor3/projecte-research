@@ -4,7 +4,7 @@ license="MIT"
 
 [[mods]] #mandatory
 modId="projecte_research" #mandatory
-version="1.0.0" #mandatory
+version="1.0.1" #mandatory
 displayName="ProjectE Research" #mandatory
 logoFile="logo.png"
 authors="SSS_Loc" #optional
