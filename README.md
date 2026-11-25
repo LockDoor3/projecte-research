@@ -67,6 +67,7 @@ When determining how many items are required for a specific item, the mod checks
   "_help": "Rule priority: items > tags > nonStackableRequired > defaultRequired. nonStackableRequired applies to items that do not stack (max stack size 1); set it to -1 to disable. After editing this file run /projecte_research reload or restart the game.",
   "defaultRequired": 64,
   "nonStackableRequired": 1,
+  "condenserRequiresLearned": true,
   "tags": [
     { "tag": "forge:tools", "required": 1 },
     { "tag": "forge:armors", "required": 1 },
