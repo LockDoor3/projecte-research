@@ -6,6 +6,8 @@ bin
 .classpath
 .project
 libs/
+ProjectE addon.userlibraries
+ProjectE_addon.eml
 
 # idea
 out
