@@ -15,8 +15,13 @@ public abstract class TransmutationSlotLearnMixin {
     /**
      * Положили предмет в слот ввода или блокировки: он не съеден, поэтому изучение
      * не засчитываем. Изучение остаётся только у слота поглощения и у шифт-клика.
+     *
+     * Два имени метода: "set" в dev-среде, "m_5852_" (SRG) в обычном клиенте и на сервере.
      */
-    @Redirect(method = "set(Lnet/minecraft/world/item/ItemStack;)V",
+    @Redirect(method = {
+            "set(Lnet/minecraft/world/item/ItemStack;)V",
+            "m_5852_(Lnet/minecraft/world/item/ItemStack;)V"
+    },
             at = @At(value = "INVOKE",
                     target = "Lmoze_intel/projecte/gameObjs/container/inventory/TransmutationInventory;handleKnowledge(Lnet/minecraft/world/item/ItemStack;)V",
                     remap = false),

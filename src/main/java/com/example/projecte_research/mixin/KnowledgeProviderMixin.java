@@ -11,6 +11,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import com.example.projecte_research.EmcSuppression;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import java.math.BigInteger;
 
 @Mixin(targets = "moze_intel.projecte.impl.capability.KnowledgeImpl$DefaultImpl", remap = false)
 public abstract class KnowledgeProviderMixin {
@@ -28,6 +31,14 @@ public abstract class KnowledgeProviderMixin {
         return ContributionManager.tryLearn(self, owner, stack);
     }
 
+
+    @ModifyVariable(method = "setEmc(Ljava/math/BigInteger;)V",
+            at = @At("HEAD"), argsOnly = true, remap = false)
+    private BigInteger research$guardEmc(BigInteger emc) {
+        IKnowledgeProvider self = (IKnowledgeProvider) (Object) this;
+        ServerPlayer owner = player instanceof ServerPlayer sp ? sp : null;
+        return EmcSuppression.onSetEmc(self, owner, emc);
+    }
     /**
      * Некоторые моды (AppliedE) шлют клиенту "предмет изучен" безусловно, даже если
      * addKnowledge вернул false. Не даём клиенту узнать то, чего нет на сервере.

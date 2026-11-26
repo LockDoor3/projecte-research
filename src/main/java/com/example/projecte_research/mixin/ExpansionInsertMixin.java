@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import com.example.projecte_research.EmcSuppression;
 
 @Pseudo
 @Mixin(targets = {
@@ -23,6 +24,7 @@ public abstract class ExpansionInsertMixin {
     private void research$captureAmount(int slot, ItemStack stack, boolean simulate,
                                         CallbackInfoReturnable<ItemStack> cir) {
         ContributionManager.EXTERNAL_AMOUNT.set((long) stack.getCount());
+        EmcSuppression.begin();
     }
 
     @Redirect(method = INSERT,
@@ -38,5 +40,6 @@ public abstract class ExpansionInsertMixin {
     private void research$clearAmount(int slot, ItemStack stack, boolean simulate,
                                       CallbackInfoReturnable<ItemStack> cir) {
         ContributionManager.EXTERNAL_AMOUNT.remove();
+        EmcSuppression.end();
     }
 }

@@ -35,6 +35,11 @@ public final class ResearchConfig {
               
                              "_help": "condenserRequiresLearned: if true, the Energy Condenser (and MK2) lock slot only accepts items the player has learned; set to false to disable.",
               "condenserRequiresLearned": true,
+            
+                             "_help": "noEmcWhileLearning: if true, items that count toward learning (not yet learned) give NO EMC when inserted into the Transmutation Table, EMC Link, AE2 terminal with AppliedE, etc. Already learned items give EMC as usual. If false (default), EMC is given as usual.",
+                "noEmcWhileLearning": false,
+                
+                
               "tags": [
                 { "tag": "forge:tools", "required": 1 },
                 { "tag": "forge:armors", "required": 1 },
@@ -55,7 +60,7 @@ public final class ResearchConfig {
 
     public record Data(int defaultRequired, int nonStackableRequired,
                        Map<String, Integer> items, List<TagRule> tags,
-                       boolean condenserRequiresLearned) {
+                       boolean condenserRequiresLearned, boolean noEmcWhileLearning) {
 
         public int requiredFor(Item item) {
             ResourceLocation id = ForgeRegistries.ITEMS.getKey(item);
@@ -84,7 +89,7 @@ public final class ResearchConfig {
                 b.writeUtf(t.tag());
                 b.writeVarInt(t.required());
             });
-            buf.writeBoolean(condenserRequiresLearned);   // новая строка
+            buf.writeBoolean(condenserRequiresLearned);
         }
 
         public static Data read(FriendlyByteBuf buf) {
@@ -92,8 +97,8 @@ public final class ResearchConfig {
             int ns = buf.readInt();
             Map<String, Integer> items = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readVarInt);
             List<TagRule> tags = buf.readCollection(ArrayList::new, b -> new TagRule(b.readUtf(), b.readVarInt()));
-            boolean condenser = buf.readBoolean();        // новая строка
-            return new Data(def, ns, items, tags, condenser);
+            boolean condenser = buf.readBoolean();
+            return new Data(def, ns, items, tags, condenser, false); // на клиенте опция не используется
         }
     }
 
@@ -125,6 +130,8 @@ public final class ResearchConfig {
         int nonStackable = root.has("nonStackableRequired") ? root.get("nonStackableRequired").getAsInt() : 1;
         boolean condenser = !root.has("condenserRequiresLearned")
                 || root.get("condenserRequiresLearned").getAsBoolean();
+        // по умолчанию выключено (если ключа нет в старом конфиге - тоже false)
+        boolean noEmc = root.has("noEmcWhileLearning") && root.get("noEmcWhileLearning").getAsBoolean();
 
         Map<String, Integer> items = new LinkedHashMap<>();
         if (root.has("items")) {
@@ -150,6 +157,6 @@ public final class ResearchConfig {
                 tags.add(new TagRule(tag, Math.max(1, o.has("required") ? o.get("required").getAsInt() : def)));
             }
         }
-        return new Data(def, nonStackable, items, tags, condenser);
+        return new Data(def, nonStackable, items, tags, condenser, noEmc);
     }
 }

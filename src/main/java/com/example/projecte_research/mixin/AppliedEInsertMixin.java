@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import com.example.projecte_research.EmcSuppression;
 
 /**
  * Точечный hook под AppliedE: передаёт реальное количество вставляемых предметов
@@ -26,6 +27,13 @@ public abstract class AppliedEInsertMixin {
         return amount;
     }
 
+    @Inject(
+            method = "insertItem(Lappeng/api/stacks/AEItemKey;JLappeng/api/config/Actionable;Lappeng/api/networking/security/IActionSource;ZZLjava/lang/Runnable;)J",
+            at = @At("HEAD"), remap = false)
+    private void research$beginEmcScope(CallbackInfoReturnable<Long> cir) {
+        EmcSuppression.begin();
+    }
+
     /** Количество после ограничения по энергии сети (если оно сработало). */
     @ModifyVariable(
             method = "insertItem(Lappeng/api/stacks/AEItemKey;JLappeng/api/config/Actionable;Lappeng/api/networking/security/IActionSource;ZZLjava/lang/Runnable;)J",
@@ -40,5 +48,6 @@ public abstract class AppliedEInsertMixin {
             at = @At("RETURN"), remap = false)
     private void research$clearAmount(CallbackInfoReturnable<Long> cir) {
         ContributionManager.EXTERNAL_AMOUNT.remove();
+        EmcSuppression.end();
     }
 }

@@ -64,9 +64,12 @@ public final class ContributionManager {
         int required = ResearchConfig.current().requiredFor(item);
         CompoundTag d = data(player);
         String key = keyOf(item);
-        int total = d.getInt(key) + amount;
+        int previous = d.getInt(key);
+        int total = previous + amount;
 
         boolean learned = total >= required;
+        // сколько предметов сверх нужного: за них EMC начисляется как обычно
+        EmcSuppression.markLearning(amount, learned ? total - required : 0);
         if (learned) {
             d.remove(key);
         } else {

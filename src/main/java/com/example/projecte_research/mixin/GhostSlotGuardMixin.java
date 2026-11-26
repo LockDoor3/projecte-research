@@ -19,11 +19,14 @@ public abstract class GhostSlotGuardMixin {
 
     private static final String CLICKED =
             "clicked(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V";
+    private static final String CLICKED_SRG = "m_150399_(IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V";
+
 
     @Unique
     private ItemStack[] research$ghostBefore;
 
-    @Inject(method = CLICKED, at = @At("HEAD"))
+
+    @Inject(method = {CLICKED, CLICKED_SRG}, at = @At("HEAD"), remap = false)
     private void research$snapshot(int slotId, int button, ClickType type, Player player, CallbackInfo ci) {
         research$ghostBefore = null;
         if (!(player instanceof ServerPlayer) || !ResearchConfig.current().condenserRequiresLearned()) return;

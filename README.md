@@ -4,6 +4,8 @@
 
 # ProjectE Research
 
+Download: https://www.curseforge.com/minecraft/mc-mods/projecte-research
+-
 An addon for ProjectE (Minecraft 1.20.1) that introduces a research mechanic.
 Instead of instantly learning an item by picking it up, players must accumulate a certain amount of items (defined in the config) before they can learn it.
 

@@ -63,6 +63,11 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
+mixin {
+    add sourceSets.main, "projecte_research.refmap.json"
+    config "projecte_research.mixins.json"
+}
+
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
             minecraft_version: minecraft_version,
