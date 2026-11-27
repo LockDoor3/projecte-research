@@ -41,7 +41,7 @@ public abstract class GhostSlotGuardMixin {
         research$ghostBefore = copy;
     }
 
-    @Inject(method = {CLICKED, CLICKED_SRG}, at = @At("RETURN"))
+    @Inject(method = CLICKED, at = @At("RETURN"))
     private void research$verify(int slotId, int button, ClickType type, Player player, CallbackInfo ci) {
         ItemStack[] before = research$ghostBefore;
         research$ghostBefore = null;

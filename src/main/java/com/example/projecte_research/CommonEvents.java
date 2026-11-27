@@ -18,7 +18,7 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CommonEvents {
-    @SubscribeEvent
+    @SubscribeEvent(priority = net.minecraftforge.eventbus.api.EventPriority.LOWEST)
     public void onAttemptLearn(PlayerAttemptLearnEvent event) {
         Player player = event.getPlayer();
         if (player.level().isClientSide) {
@@ -28,8 +28,21 @@ public class CommonEvents {
         if (DepositTracker.isBypassed()) {
             return; // наш собственный вызов addKnowledge: прогресс уже учтён
         }
-        int count = ContributionManager.CURRENT_COUNT.get();
-        if (!ContributionManager.addProgress(player, event.getReducedInfo(), count)) {
+
+        Long external = ContributionManager.EXTERNAL_AMOUNT.get();
+        Integer table = ContributionManager.CURRENT_COUNT.get();
+        if (external == null && table == null && !EmcSuppression.explicitActive()) {
+            ItemStack source = LearningSource.find(event.getSourceInfo());
+            if (!source.isEmpty()) {
+                if (!ContributionManager.offer(player, event.getReducedInfo(), source)) {
+                    event.setCanceled(true);
+                }
+                return;
+            }
+        }
+        int amount = external != null ? (int) Math.min(Integer.MAX_VALUE, external)
+                : table != null ? table : 1;
+        if (amount <= 0 || !ContributionManager.addProgress(player, event.getReducedInfo(), amount)) {
             event.setCanceled(true);
         }
     }
@@ -74,6 +87,7 @@ public class CommonEvents {
     public void onServerTick(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             DepositTracker.flush();
+            ContributionManager.clearOffers();
         }
     }
 

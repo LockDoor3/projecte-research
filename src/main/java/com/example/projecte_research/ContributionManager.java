@@ -4,6 +4,7 @@ import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import moze_intel.projecte.api.capabilities.PECapabilities;
 import moze_intel.projecte.emc.nbt.NBTManager;
+import moze_intel.projecte.utils.EMCHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -14,16 +15,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.math.BigInteger;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public final class ContributionManager {
     private static final String ROOT = "projecte_research_progress";
 
     /** Сколько предметов в стаке, который сейчас обрабатывается (ставит mixin). */
-    public static final ThreadLocal<Integer> CURRENT_COUNT = ThreadLocal.withInitial(() -> 1);
+    public static final ThreadLocal<Integer> CURRENT_COUNT = new ThreadLocal<>();
 
-    /** Реальное количество предметов от внешнего мода. null - не задано. */
+    private record PendingOffer(Player player, ItemInfo key, ItemStack stack, int count) {}
+    private static final ThreadLocal<Deque<PendingOffer>> PENDING =
+            ThreadLocal.withInitial(ArrayDeque::new);
+
     public static final ThreadLocal<Long> EXTERNAL_AMOUNT = new ThreadLocal<>();
 
     private ContributionManager() {}
@@ -99,6 +107,68 @@ public final class ContributionManager {
     /** Для DepositTracker: то же самое, но без привязки к явному сеансу. */
     public static Result addProgressResult(Player player, ItemInfo info, long amount) {
         return step(player, info, amount);
+    }
+
+    public static boolean offer(Player player, ItemInfo key, ItemStack stack) {
+        int needed = Math.max(1, ResearchConfig.current().requiredFor(key.getItem())
+                - getProgress(player, key.getItem()));
+        PendingOffer offer = new PendingOffer(player, key, stack, Math.min(needed, stack.getCount()));
+        if (stack.getCount() >= needed) {
+            PENDING.get().addLast(offer);
+            return true;
+        }
+        commit(offer);
+        return false;
+    }
+
+    public static boolean finishOffer(Player player, ItemInfo info, boolean accepted) {
+        Iterator<PendingOffer> it = PENDING.get().descendingIterator();
+        while (it.hasNext()) {
+            PendingOffer offer = it.next();
+            if (offer.player() == player && offer.key() == info) {
+                it.remove();
+                if (accepted) commit(offer);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static void commit(PendingOffer offer) {
+        Player player = offer.player();
+        ItemStack stack = offer.stack();
+        step(player, offer.key(), offer.count());
+        if (ResearchConfig.current().noEmcWhileLearning()) {
+            // Buffered sellers calculate the payout from the remaining input count.
+            stack.shrink(offer.count());
+        } else if (player instanceof ServerPlayer serverPlayer && isPlayerInput(player, stack)) {
+            // A partial contribution cancels vanilla learning, so the caller can skip its sale.
+            // Settle the offered stack here. A caller that continues sees zero items to sell.
+            IKnowledgeProvider knowledge = provider(player);
+            if (knowledge != null) {
+                long unit = EMCHelper.getEmcSellValue(offer.key());
+                BigInteger proceeds = BigInteger.valueOf(unit).multiply(BigInteger.valueOf(stack.getCount()));
+                stack.shrink(stack.getCount());
+                if (proceeds.signum() > 0) {
+                    DepositTracker.bypass(() -> knowledge.setEmc(knowledge.getEmc().add(proceeds)));
+                    knowledge.syncEmc(serverPlayer);
+                }
+            }
+        }
+        player.containerMenu.broadcastChanges();
+    }
+
+    private static boolean isPlayerInput(Player player, ItemStack stack) {
+        if (player.containerMenu.getCarried() == stack) return true;
+        for (var slot : player.containerMenu.slots) {
+            if (slot.container == player.getInventory() && slot.getItem() == stack) return true;
+        }
+        return false;
+    }
+
+    public static void clearOffers() {
+        PENDING.remove();
+        LearningSource.clear();
     }
 
     // ---------- обучение «по стаку» через другие моды (Expansion, AppliedE и т.д.) ----------

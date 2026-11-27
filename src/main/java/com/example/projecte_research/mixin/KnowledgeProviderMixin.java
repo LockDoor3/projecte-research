@@ -55,10 +55,13 @@ public abstract class KnowledgeProviderMixin {
     @Inject(method = "addKnowledge(Lmoze_intel/projecte/api/ItemInfo;)Z",
             at = @At("RETURN"), cancellable = true, remap = false, require = 0)
     private void research$trackLearn(ItemInfo info, CallbackInfoReturnable<Boolean> cir) {
-        if (!cir.getReturnValueZ()) return;
         IKnowledgeProvider self = (IKnowledgeProvider) (Object) this;
         ServerPlayer owner = player instanceof ServerPlayer sp ? sp : null;
-        if (!DepositTracker.onLearned(self, owner, info)) {
+
+        if (DepositTracker.isBypassed() || ContributionManager.finishOffer(owner, info, cir.getReturnValueZ())) {
+            return;
+        }
+        if (cir.getReturnValueZ() && !DepositTracker.onLearned(self, owner, info)) {
             cir.setReturnValue(false);
         }
     }

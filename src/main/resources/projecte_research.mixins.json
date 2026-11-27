@@ -7,6 +7,8 @@
   "mixins": [
     "TransmutationKnowledgeMixin",
     "KnowledgeProviderMixin",
+    "ItemInfoSourceMixin",
+    "PersistentInfoSourceMixin",
     "AppliedEInsertMixin",
     "ExpansionInsertMixin",
     "TransmutationSlotLearnMixin",
