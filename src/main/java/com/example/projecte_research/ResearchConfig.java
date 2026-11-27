@@ -1,6 +1,8 @@
 package com.example.projecte_research;
 
 import com.google.gson.JsonElement;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.logging.LogUtils;
@@ -15,8 +17,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
 import java.io.Reader;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.util.function.Consumer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,7 +42,7 @@ public final class ResearchConfig {
               "condenserRequiresLearned": true,
             
                              "_help": "noEmcWhileLearning: if true, items that count toward learning (not yet learned) give NO EMC when inserted into the Transmutation Table, EMC Link, AE2 terminal with AppliedE, etc. Already learned items give EMC as usual. If false (default), EMC is given as usual.",
-                "noEmcWhileLearning": false,
+                "noEmcWhileLearning": true,
 
                              "_help": "debugFlow: if true, writes lines starting with [flow] to latest.log showing how other mods learn items and give EMC. Turn on only to diagnose compatibility problems.",
                 "debugFlow": false,
@@ -127,12 +132,60 @@ public final class ResearchConfig {
                 Files.writeString(path, DEFAULT_FILE);
             }
             try (Reader reader = Files.newBufferedReader(path)) {
-                current = parse(JsonParser.parseReader(reader).getAsJsonObject());
+                apply(JsonParser.parseReader(reader).getAsJsonObject());
             }
         } catch (Exception e) {
             LOGGER.error("Failed to read {}, using default values", FILE_NAME, e);
-            current = parse(JsonParser.parseString(DEFAULT_FILE).getAsJsonObject());
+            apply(JsonParser.parseString(DEFAULT_FILE).getAsJsonObject());
         }
+    }
+
+    static void setItemRule(JsonObject root, String id, int required) {
+        JsonArray items = root.getAsJsonArray("items");
+        if (items == null) {
+            items = new JsonArray();
+            root.add("items", items);
+        }
+        // The last matching entry wins in parse(), including shorthand minecraft IDs.
+        for (int i = items.size() - 1; i >= 0; i--) {
+            JsonObject entry = items.get(i).getAsJsonObject();
+            if (entry.has("id") && ResourceLocation.tryParse(id).equals(
+                    ResourceLocation.tryParse(entry.get("id").getAsString()))) {
+                entry.addProperty("required", required);
+                return;
+            }
+        }
+        JsonObject entry = new JsonObject();
+        entry.addProperty("id", id);
+        entry.addProperty("required", required);
+        items.add(entry);
+    }
+
+    static void update(Consumer<JsonObject> edit) throws IOException {
+        Path path = FMLPaths.CONFIGDIR.get().resolve(FILE_NAME);
+        JsonObject root = JsonParser.parseString(Files.exists(path) ? Files.readString(path) : DEFAULT_FILE)
+                .getAsJsonObject();
+        edit.accept(root);
+        Data next = parse(root);
+        boolean nextDebug = readDebug(root);
+        Path temp = Files.createTempFile(path.getParent(), FILE_NAME, ".tmp");
+        try {
+            Files.writeString(temp, new GsonBuilder().setPrettyPrinting().create().toJson(root) + "\n");
+            Files.move(temp, path, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+        } finally {
+            Files.deleteIfExists(temp);
+        }
+        current = next;
+        debugFlow = nextDebug;
+    }
+
+    private static boolean readDebug(JsonObject root) {
+        return root.has("debugFlow") && root.get("debugFlow").getAsBoolean();
+    }
+
+    private static void apply(JsonObject root) {
+        current = parse(root);
+        debugFlow = readDebug(root);
     }
 
     private static Data parse(JsonObject root) {
@@ -142,7 +195,6 @@ public final class ResearchConfig {
                 || root.get("condenserRequiresLearned").getAsBoolean();
         // по умолчанию выключено (если ключа нет в старом конфиге - тоже false)
         boolean noEmc = root.has("noEmcWhileLearning") && root.get("noEmcWhileLearning").getAsBoolean();
-        debugFlow = root.has("debugFlow") && root.get("debugFlow").getAsBoolean();
 
         Map<String, Integer> items = new LinkedHashMap<>();
         if (root.has("items")) {
