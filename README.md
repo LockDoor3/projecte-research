@@ -72,6 +72,10 @@ When determining how many items are required for a specific item, the mod checks
 
   "_help": "condenserRequiresLearned: if true, the Energy Condenser (and MK2) lock slot only accepts items the player has learned; set to false to disable.",
   "condenserRequiresLearned": true,
+  
+  "_help": "noEmcWhileLearning: if true, items that count toward learning (not yet learned) give NO EMC when inserted into the Transmutation Table, EMC Link, AE2 terminal with AppliedE, etc. Already learned items give EMC as usual. If false (default), EMC is given as usual.",
+  "noEmcWhileLearning": true,
+
   "tags": [
     { "tag": "forge:tools", "required": 1 },
     { "tag": "forge:armors", "required": 1 },

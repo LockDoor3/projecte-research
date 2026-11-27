@@ -13,6 +13,7 @@ import moze_intel.projecte.api.event.PlayerAttemptLearnEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -23,6 +24,9 @@ public class CommonEvents {
         if (player.level().isClientSide) {
             event.setCanceled(true);
             return;
+        }
+        if (DepositTracker.isBypassed()) {
+            return; // наш собственный вызов addKnowledge: прогресс уже учтён
         }
         int count = ContributionManager.CURRENT_COUNT.get();
         if (!ContributionManager.addProgress(player, event.getReducedInfo(), count)) {
@@ -63,6 +67,14 @@ public class CommonEvents {
         event.setCanceled(true);
         event.setCancellationResult(InteractionResult.CONSUME);
         LearnGuard.deny(player);
+    }
+
+    /** Конец тика: добираем вклады, по которым так и не пришёл EMC (см. DepositTracker.flush). */
+    @SubscribeEvent
+    public void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            DepositTracker.flush();
+        }
     }
 
     @SubscribeEvent

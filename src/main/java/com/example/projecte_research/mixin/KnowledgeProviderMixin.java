@@ -1,6 +1,7 @@
 package com.example.projecte_research.mixin;
 
 import com.example.projecte_research.ContributionManager;
+import com.example.projecte_research.DepositTracker;
 import moze_intel.projecte.api.ItemInfo;
 import moze_intel.projecte.api.capabilities.IKnowledgeProvider;
 import net.minecraft.server.level.ServerPlayer;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.example.projecte_research.EmcSuppression;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import java.math.BigInteger;
@@ -24,13 +26,42 @@ public abstract class KnowledgeProviderMixin {
     /**
      * Переопределяет default-метод IKnowledgeProvider.addKnowledge(ItemStack):
      * его используют блоки и шины других модов, обходящие слот поглощения.
+     *
+     * Если мы внутри явного сеанса (стол, Expansion, AppliedE) - считаем по точному количеству.
+     * Если источник неизвестный - передаём дальше как обычное изучение и запоминаем количество
+     * из стака как подсказку; окончательно вклад рассчитает DepositTracker по приросту EMC.
      */
     public boolean addKnowledge(ItemStack stack) {
         IKnowledgeProvider self = (IKnowledgeProvider) (Object) this;
         ServerPlayer owner = player instanceof ServerPlayer sp ? sp : null;
-        return ContributionManager.tryLearn(self, owner, stack);
+        if (owner == null || stack.isEmpty() || DepositTracker.isBypassed()
+                || ContributionManager.EXTERNAL_AMOUNT.get() != null
+                || com.example.projecte_research.EmcSuppression.explicitActive()) {
+            return ContributionManager.tryLearn(self, owner, stack);
+        }
+        DepositTracker.setHint(stack.getCount());
+        try {
+            return self.addKnowledge(ItemInfo.fromStack(stack));
+        } finally {
+            DepositTracker.clearHint();
+        }
     }
 
+    /**
+     * Единственная точка, через которую проходит ЛЮБОЕ изучение предмета любым модом.
+     * Здесь мы не знаем количество, поэтому только сообщаем DepositTracker, что предмет выучен.
+     * require = 0: если в другой версии ProjectE метода нет, mixin просто не сработает, а не уронит игру.
+     */
+    @Inject(method = "addKnowledge(Lmoze_intel/projecte/api/ItemInfo;)Z",
+            at = @At("RETURN"), cancellable = true, remap = false, require = 0)
+    private void research$trackLearn(ItemInfo info, CallbackInfoReturnable<Boolean> cir) {
+        if (!cir.getReturnValueZ()) return;
+        IKnowledgeProvider self = (IKnowledgeProvider) (Object) this;
+        ServerPlayer owner = player instanceof ServerPlayer sp ? sp : null;
+        if (!DepositTracker.onLearned(self, owner, info)) {
+            cir.setReturnValue(false);
+        }
+    }
 
     @ModifyVariable(method = "setEmc(Ljava/math/BigInteger;)V",
             at = @At("HEAD"), argsOnly = true, remap = false)

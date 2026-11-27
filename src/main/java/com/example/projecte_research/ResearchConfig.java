@@ -38,6 +38,9 @@ public final class ResearchConfig {
             
                              "_help": "noEmcWhileLearning: if true, items that count toward learning (not yet learned) give NO EMC when inserted into the Transmutation Table, EMC Link, AE2 terminal with AppliedE, etc. Already learned items give EMC as usual. If false (default), EMC is given as usual.",
                 "noEmcWhileLearning": false,
+
+                             "_help": "debugFlow: if true, writes lines starting with [flow] to latest.log showing how other mods learn items and give EMC. Turn on only to diagnose compatibility problems.",
+                "debugFlow": false,
                 
                 
               "tags": [
@@ -102,6 +105,13 @@ public final class ResearchConfig {
         }
     }
 
+    private static volatile boolean debugFlow;
+
+    /** Диагностика совместимости: пишет в лог цепочки "изучение + EMC" от других модов. */
+    public static boolean debugFlow() {
+        return debugFlow;
+    }
+
     private static volatile Data current = parse(JsonParser.parseString(DEFAULT_FILE).getAsJsonObject());
 
     private ResearchConfig() {}
@@ -132,6 +142,7 @@ public final class ResearchConfig {
                 || root.get("condenserRequiresLearned").getAsBoolean();
         // по умолчанию выключено (если ключа нет в старом конфиге - тоже false)
         boolean noEmc = root.has("noEmcWhileLearning") && root.get("noEmcWhileLearning").getAsBoolean();
+        debugFlow = root.has("debugFlow") && root.get("debugFlow").getAsBoolean();
 
         Map<String, Integer> items = new LinkedHashMap<>();
         if (root.has("items")) {

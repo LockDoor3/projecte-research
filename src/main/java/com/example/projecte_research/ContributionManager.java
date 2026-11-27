@@ -58,22 +58,23 @@ public final class ContributionManager {
 
     // ---------- обычное накопление (поглощение в столе) ----------
 
-    /** @return true, если набрано достаточно и предмет можно изучить */
-    public static boolean addProgress(Player player, ItemInfo info, int amount) {
+    /** learned - порог набран; excess - сколько предметов сверх нужного (за них EMC идёт как обычно). */
+    public record Result(boolean learned, long excess) {}
+
+    /** Общий расчёт прогресса. Побочных эффектов, кроме сохранения прогресса и подсказки игроку, нет. */
+    private static Result step(Player player, ItemInfo info, long amount) {
         Item item = info.getItem();
         int required = ResearchConfig.current().requiredFor(item);
         CompoundTag d = data(player);
         String key = keyOf(item);
-        int previous = d.getInt(key);
-        int total = previous + amount;
+        long previous = d.getInt(key);
+        long total = previous + Math.max(0, amount);
 
         boolean learned = total >= required;
-        // сколько предметов сверх нужного: за них EMC начисляется как обычно
-        EmcSuppression.markLearning(amount, learned ? total - required : 0);
         if (learned) {
             d.remove(key);
         } else {
-            d.putInt(key, total);
+            d.putInt(key, (int) total);
             Component name = new ItemStack(item).getHoverName();
             player.displayClientMessage(
                     Component.literal("").append(name).append(Component.literal(": " + total + "/" + required)),
@@ -83,7 +84,21 @@ public final class ContributionManager {
         if (player instanceof ServerPlayer sp) {
             sync(sp);
         }
-        return learned;
+        return new Result(learned, learned ? total - required : 0);
+    }
+
+    /** Для явных сеансов (стол, Expansion, AppliedE): заодно сообщает сеансу, сколько предметов учтено.
+     *  @return true, если набрано достаточно и предмет можно изучить */
+    public static boolean addProgress(Player player, ItemInfo info, int amount) {
+        Result r = step(player, info, amount);
+        // сколько предметов сверх нужного: за них EMC начисляется как обычно
+        EmcSuppression.markLearning(amount, (int) Math.min(r.excess(), Integer.MAX_VALUE));
+        return r.learned();
+    }
+
+    /** Для DepositTracker: то же самое, но без привязки к явному сеансу. */
+    public static Result addProgressResult(Player player, ItemInfo info, long amount) {
+        return step(player, info, amount);
     }
 
     // ---------- обучение «по стаку» через другие моды (Expansion, AppliedE и т.д.) ----------
@@ -109,7 +124,9 @@ public final class ContributionManager {
         }
 
         if (addProgress(owner, reduced, count)) {
-            return provider.addKnowledge(info);
+            boolean[] result = new boolean[1];
+            DepositTracker.bypass(() -> result[0] = provider.addKnowledge(info));
+            return result[0];
         }
         return false;
     }
@@ -127,8 +144,12 @@ public final class ContributionManager {
         boolean learned = amount >= required;
         if (learned) {
             d.remove(key);
-            if (provider != null && provider.addKnowledge(info)) {
-                provider.syncKnowledgeChange(player, info, true);
+            if (provider != null) {
+                boolean[] added = new boolean[1];
+                DepositTracker.bypass(() -> added[0] = provider.addKnowledge(info));
+                if (added[0]) {
+                    provider.syncKnowledgeChange(player, info, true);
+                }
             }
         } else {
             if (amount > 0) {

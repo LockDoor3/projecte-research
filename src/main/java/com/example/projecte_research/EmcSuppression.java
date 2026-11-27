@@ -46,7 +46,36 @@ public final class EmcSuppression {
 
     private static final ThreadLocal<Scope> SCOPE = new ThreadLocal<>();
 
+    /**
+     * Глубина "явных" сеансов (стол, Expansion, AppliedE) независимо от настройки noEmcWhileLearning.
+     * Нужна DepositTracker: внутри явного сеанса точное количество уже известно, угадывать не нужно.
+     * [0] - глубина, [1] - момент входа (защита от утечки, если сеанс не закрыли из-за исключения).
+     */
+    private static final ThreadLocal<long[]> EXPLICIT = ThreadLocal.withInitial(() -> new long[2]);
+
     private EmcSuppression() {}
+
+    public static boolean explicitActive() {
+        long[] st = EXPLICIT.get();
+        if (st[0] > 0 && System.nanoTime() - st[1] > MAX_AGE_NANOS) {
+            st[0] = 0;
+        }
+        return st[0] > 0;
+    }
+
+    private static void enterExplicit() {
+        long[] st = EXPLICIT.get();
+        if (st[0] <= 0 || System.nanoTime() - st[1] > MAX_AGE_NANOS) {
+            st[0] = 0;
+            st[1] = System.nanoTime();
+        }
+        st[0]++;
+    }
+
+    private static void leaveExplicit() {
+        long[] st = EXPLICIT.get();
+        if (st[0] > 0) st[0]--;
+    }
 
     private static Scope current() {
         Scope s = SCOPE.get();
@@ -64,6 +93,7 @@ public final class EmcSuppression {
     }
 
     public static void begin() {
+        enterExplicit();
         if (!ResearchConfig.current().noEmcWhileLearning()) return;
         Scope s = current();
         if (s == null) {
@@ -85,7 +115,7 @@ public final class EmcSuppression {
     /** Вызывается из setEmc. Возвращает значение, которое нужно реально записать. */
     public static BigInteger onSetEmc(IKnowledgeProvider provider, ServerPlayer owner, BigInteger newEmc) {
         Scope s = current();
-        if (s == null) return newEmc;
+        if (s == null) return DepositTracker.onSetEmc(provider, owner, newEmc); // неизвестный источник
         BigInteger now = provider.getEmc();
         Baseline b = s.baselines.computeIfAbsent(provider, p -> new Baseline(owner, now));
         if (newEmc.compareTo(now) <= 0) return newEmc; // списание EMC не трогаем
@@ -99,6 +129,7 @@ public final class EmcSuppression {
     }
 
     public static void end() {
+        leaveExplicit();
         Scope s = current();
         if (s == null) return;
         if (--s.depth > 0) return;
